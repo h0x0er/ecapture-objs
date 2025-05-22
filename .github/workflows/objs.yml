@@ -1,6 +1,14 @@
 name: Build Objs
 on:
   workflow_dispatch:
+    ecapture-ref:
+      description: 'Enter ecapture ref'
+      type: string
+      default: "master"
+    release-tag:
+      description: 'Enter release tag'
+      type: string
+      required: true
 
 
 concurrency:
@@ -51,7 +59,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: "gojue/ecapture"
-          ref: "master" # TODO: take from inputs
+          ref: "${{ inputs.ecapture-ref }}"
           submodules: 'recursive'
           fetch-depth: 0
 
@@ -83,11 +91,10 @@ jobs:
           git config --global user.email "obj-builder-ci@users.noreply.github.com"
 
           git remote -v
-          git remote remove origin
-          git remote add origin https://github.com/h0x0er/ecapture-objs.git
+          git remote set-url origin https://github.com/h0x0er/ecapture-objs.git
           git remote -v
 
-          # git checkout -b "build/test"
+          git checkout -b "release/${{ inputs.release-tag }}"
           git branch
 
       - name: Build amd64 objs
@@ -116,4 +123,4 @@ jobs:
 
           git add .
           git commit -m "build eBPF objs"
-          git push
+          git push -u origin "release/${{ inputs.release-tag }}"
