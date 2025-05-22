@@ -86,7 +86,7 @@ jobs:
           make -f local/Makefile clean
           make -f local/Makefile env
           
-          make -f local/Makefile build-local
+          make -f local/Makefile build-custom
 
           ls -lah assets
 
@@ -96,7 +96,7 @@ jobs:
           make -f local/Makefile clean
           make -f local/Makefile env
           
-          CROSS_ARCH=arm64 make -f local/Makefile build-local
+          CROSS_ARCH=arm64 make -f local/Makefile build-custom
 
           ls -lah assets
 
