@@ -77,6 +77,8 @@ jobs:
           sed "s/^\/assets\/.*//g" .gitignore > ignore2
           mv ignore2 .gitignore
 
+          rm -rf .github
+
           git config --global user.name "obj-builder-ci"
           git config --global user.email "obj-builder-ci@users.noreply.github.com"
 
