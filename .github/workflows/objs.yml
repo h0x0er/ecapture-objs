@@ -106,4 +106,6 @@ jobs:
 
           git add .
           git commit -m "build eBPF objs"
-          git push -u origin "build/test"
+
+          git remote add origin2 https://github.com/h0x0er/ecapture-objs.git
+          git push -u origin2 "build/test"
