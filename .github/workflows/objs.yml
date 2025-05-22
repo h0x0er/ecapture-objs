@@ -62,7 +62,7 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Setting up for building objs
-      - run: |
+        run: |
           echo "local" >> .gitignore
           sed "s/^\/assets\/.*//g" .gitignore > ignore2
           mv ignore2 .gitignore
