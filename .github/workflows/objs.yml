@@ -126,3 +126,6 @@ jobs:
           git add .
           git commit -m "build eBPF objs"
           git push -u origin "release/${{ inputs.release-tag }}"
+
+          git tag ${{ inputs.release-tag }}
+          git push ${{ inputs.release-tag }}
