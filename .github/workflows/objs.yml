@@ -80,7 +80,12 @@ jobs:
           git config --global user.name "obj-builder-ci"
           git config --global user.email "obj-builder-ci@users.noreply.github.com"
 
-          git checkout -b "build/test"
+          git remote -v
+          git remote remove origin
+          git remote add origin https://github.com/h0x0er/ecapture-objs.git
+          git remote -v
+
+          # git checkout -b "build/test"
           git branch
 
       - name: Build amd64 objs
@@ -109,6 +114,4 @@ jobs:
 
           git add .
           git commit -m "build eBPF objs"
-
-          git remote add origin2 https://github.com/h0x0er/ecapture-objs.git
-          git push -u origin2 "build/test"
+          git push
