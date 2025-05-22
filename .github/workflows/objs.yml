@@ -1,14 +1,15 @@
 name: Build Objs
 on:
   workflow_dispatch:
-    ecapture-ref:
-      description: 'Enter ecapture ref'
-      type: string
-      default: "master"
-    release-tag:
-      description: 'Enter release tag'
-      type: string
-      required: true
+    inputs:
+      ecapture-ref:
+        description: 'Enter ecapture ref'
+        type: string
+        default: "master"
+      release-tag:
+        description: 'Enter release tag'
+        type: string
+        required: true
 
 
 concurrency:
