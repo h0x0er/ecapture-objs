@@ -61,15 +61,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Setting up for building objs
-        run: |
-          echo "local" >> .gitignore
-          sed "s/^\/assets\/.*//g" .gitignore > ignore2
-          mv ignore2 .gitignore
 
       - uses: actions/checkout@v4
         with:
           path: "local"
+
+      - name: Setting up for building objs
+        run: |
+
+          echo "Fixing gitignore"
+          echo "local" >> .gitignore
+          sed "s/^\/assets\/.*//g" .gitignore > ignore2
+          mv ignore2 .gitignore
+
+          git config --global user.name "obj-builder-ci"
+          git config --global user.email "obj-builder-ci@users.noreply.github.com"
+
+          git checkout -b "build/test"
+          git branch
 
       - name: Build amd64 objs
         run: |
@@ -81,7 +90,7 @@ jobs:
 
           ls -lah assets
 
-      - name: Build amd64 objs
+      - name: Build arm64 objs
         run: |
           
           make -f local/Makefile clean
@@ -90,3 +99,10 @@ jobs:
           CROSS_ARCH=arm64 make -f local/Makefile build-local
 
           ls -lah assets
+
+
+      - name: Commiting and Pushing new changes
+        run: |
+
+          git commit -m "build eBPF objs"
+          git push -u origin "build/test"
