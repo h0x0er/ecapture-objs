@@ -104,5 +104,6 @@ jobs:
       - name: Commiting and Pushing new changes
         run: |
 
+          git add .
           git commit -m "build eBPF objs"
           git push -u origin "build/test"
