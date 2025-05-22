@@ -1,0 +1,92 @@
+name: Build Objs
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  build:
+    runs-on: ubuntu-22.04
+    name: 
+    steps:
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.10'
+
+      - name: Install Compilers
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            build-essential \
+            pkgconf \
+            libelf-dev \
+            llvm-14 \
+            clang-14 \
+            linux-tools-common \
+            linux-tools-generic \
+            gcc \
+            gcc-aarch64-linux-gnu \
+            linux-source
+          for tool in "clang" "llc" "llvm-strip"
+          do
+            sudo rm -f /usr/bin/$tool
+            sudo ln -s /usr/bin/$tool-14 /usr/bin/$tool
+          done
+          cd /usr/src
+          source_file=$(find . -maxdepth 1 -name "*linux-source*.tar.bz2")
+          source_dir=$(echo "$source_file" | sed 's/\.tar\.bz2//g')  
+          sudo tar -xf $source_file
+          cd $source_dir
+          test -f .config || sudo make oldconfig
+          sudo make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- prepare V=0
+          ls -al /usr/src/$source_dir
+        shell: bash
+
+      - uses: actions/checkout@v4
+        with:
+          repository: "gojue/ecapture"
+          ref: "master" # TODO: take from inputs
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Setting up for building objs
+      - run: |
+          echo "local" >> .gitignore
+          sed "s/^\/assets\/.*//g" .gitignore > ignore2
+          mv ignore2 .gitignore
+
+      - uses: actions/checkout@v4
+        with:
+          path: "local"
+
+      - name: Build amd64 objs
+        run: |
+
+          make -f local/Makefile clean
+          make -f local/Makefile env
+          
+          make -f local/Makefile build-local
+
+          ls -lah assets
+
+      - name: Build amd64 objs
+        run: |
+          
+          make -f local/Makefile clean
+          make -f local/Makefile env
+          
+          CROSS_ARCH=arm64 make -f local/Makefile build-local
+
+          ls -lah assets
