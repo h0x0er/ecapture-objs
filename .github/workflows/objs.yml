@@ -58,26 +58,29 @@ jobs:
           ls -al /usr/src/$source_dir
         shell: bash
 
+      # Checkout current repo
+      - uses: actions/checkout@v4
+      
+
+      # Checkout eCapture repo
       - uses: actions/checkout@v4
         with:
+          path: "ecapture"
           repository: "gojue/ecapture"
           ref: "${{ inputs.ecapture-ref }}"
           submodules: 'recursive'
           fetch-depth: 0
 
-      - uses: actions/checkout@v4
-        with:
-          path: "local"
+
+      - name: List dirs
+        run: ls -lah
 
       - name: Setting up for building objs
         run: |
-
-          echo "Fixing gitignore"
-          echo "local" >> .gitignore
-          sed "s/^\/assets\/.*//g" .gitignore > ignore2
-          mv ignore2 .gitignore
-
-          rm -rf .github
+          
+          # Copy current Makefile
+          mkdir -p ecapture/local
+          cp Makefile ecapture/local
 
           git config --global user.name "obj-builder-ci"
           git config --global user.email "obj-builder-ci@users.noreply.github.com"
@@ -91,6 +94,8 @@ jobs:
 
       - name: Build amd64 objs
         run: |
+        
+          cd ecapture
 
           make -f local/Makefile clean
           make -f local/Makefile env
@@ -102,6 +107,8 @@ jobs:
       - name: Build arm64 objs
         run: |
           
+          cd ecapture
+
           make -f local/Makefile clean
           make -f local/Makefile env
           
@@ -110,12 +117,18 @@ jobs:
           ls -lah assets
 
 
-      - name: Commiting and Pushing new changes
+      - name: Committing and Pushing new changes
         run: |
 
+          cp ecapture/assets/* assets/
+          ls -lah assets
+
           git add .
+          
+          # release branch
           git commit -m "build eBPF objs"
           git push -u origin "release/${{ inputs.release-tag }}"
 
+          # release tag
           git tag ${{ inputs.release-tag }}
           git push origin ${{ inputs.release-tag }}
