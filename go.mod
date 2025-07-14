@@ -1,3 +1,3 @@
 module github.com/h0x0er/ecapture-objs
 
-go 1.24.4
+go 1.23
