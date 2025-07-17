@@ -12,7 +12,7 @@ on:
         required: true
       is-debug:
         description: 'Are we debugging ecapture release ?'
-        type: bool
+        type: boolean
         default: false
         
 
