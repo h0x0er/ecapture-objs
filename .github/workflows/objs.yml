@@ -81,48 +81,37 @@ jobs:
         run: ls -lah
 
       - name: Setting up for building objs
-        run: |
-          
-          # Copy current Makefile
-          mkdir -p ecapture/local
-          cp Makefile ecapture/local
+        run: bash ./scripts/setup.sh
 
-          git config --global user.name "obj-builder-ci"
-          git config --global user.email "obj-builder-ci@users.noreply.github.com"
-
-          git remote -v
-          git remote set-url origin https://github.com/h0x0er/ecapture-objs.git
-          git remote -v
-
-          git checkout -b "release/${{ inputs.release-tag }}"
-          git branch
+      - name: Apply patches
+        working-directory: ./ecapture
+        run: bash ../scripts/remove-includes.sh  
 
       - name: Build amd64 objs
+        working-directory: ./ecapture
         run: |
         
-          cd ecapture
-
-          make -f local/Makefile clean
-          make -f local/Makefile env
+          make -f ../Makefile clean
+          make -f ../Makefile env
           
-          make -f local/Makefile build-custom
+          make -f ../Makefile build-custom
 
           ls -lah assets
 
       - name: Build arm64 objs
+        working-directory: ./ecapture
         run: |
           
-          cd ecapture
-
-          make -f local/Makefile clean
-          make -f local/Makefile env
+          make -f ../Makefile clean
+          make -f ../Makefile env
           
-          CROSS_ARCH=arm64 make -f local/Makefile build-custom
+          CROSS_ARCH=arm64 make -f ../Makefile build-custom
 
           ls -lah assets
 
 
       - name: Committing and Pushing new changes
+        if: {{ inputs.is-debug == false }}
         run: |
 
           cp ecapture/assets/* assets/
