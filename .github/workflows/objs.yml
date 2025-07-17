@@ -12,8 +12,8 @@ on:
         required: true
       is-debug:
         description: 'Are we debugging ecapture release ?'
-        type: boolean
-        default: false
+        type: string
+        default: "false"
         
 
 
@@ -111,7 +111,7 @@ jobs:
 
 
       - name: Committing and Pushing new changes
-        if: {{ ! inputs.is-debug }}
+        if: {{ inputs.is-debug == "false" }}
         run: |
 
           cp ecapture/assets/* assets/
