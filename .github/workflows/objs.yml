@@ -80,8 +80,12 @@ jobs:
       - name: List dirs
         run: ls -lah
 
-      - name: Setting up for building objs
-        run: bash ./scripts/setup.sh
+      - name: Configure git
+        run: | 
+          bash ./scripts/configure-git.sh
+
+          git checkout -b "release/${{ inputs.release-tag }}"
+          git branch
 
       - name: Apply patches
         working-directory: ./ecapture
