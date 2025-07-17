@@ -111,7 +111,7 @@ jobs:
 
 
       - name: Committing and Pushing new changes
-        if: {{ inputs.is-debug == false }}
+        if: {{ ! inputs.is-debug }}
         run: |
 
           cp ecapture/assets/* assets/
