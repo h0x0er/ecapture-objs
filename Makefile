@@ -15,7 +15,7 @@ KERN_OBJECTS = ${KERN_SOURCES:.c=.o}
 # CROSS_ARCH=arm64|arm64
 CROSS_ARCH ?= amd64
 
-$(KERN_OBJECTS): ${KERN_SOURCES} \
+$(KERN_OBJECTS): %.o: %.c \
 	| .checkver_$(CMD_CLANG) \
 	.checkver_$(CMD_GO) \
 	autogen
