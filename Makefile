@@ -4,8 +4,8 @@ include Makefile
 # BPF Source file
 #
 TARGETS := kern/openssl_1_1_1a
-TARGETS += kern/gnutls_3_6_12
 TARGETS += kern/gotls
+TARGETS += kern/gnutls_3_6_12
 
 # Generate file name-scheme based on TARGETS
 KERN_SOURCES = ${TARGETS:=_kern.c}
