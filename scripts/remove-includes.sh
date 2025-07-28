@@ -18,8 +18,3 @@ sed -i "s/$openssl_master//" kern/openssl_*
 # remove gnutls_masterkey
 gnutls_master="#include \"gnutls_masterkey.h\""
 sed -i "s/$gnutls_master//" kern/gnutls_*
-
-
-# remove gotls_masterkey
-gnutls_master="#include \"gnutls_masterkey.h\""
-sed -i "s/$gnutls_master//" kern/gnutls_*
