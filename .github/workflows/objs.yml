@@ -29,6 +29,16 @@ jobs:
       contents: write
 
     steps:
+
+
+      - name: Print inputs
+        run: |
+        
+          echo "ecapture-ref=${{ inputs.ecapture-ref }}"
+          echo "release-tag=${{ inputs.release-tag }}"
+          echo "is-debug=${{ inputs.is-debug }}"
+
+
       - uses: actions/setup-go@v5
         with:
           go-version: '1.22.10'
